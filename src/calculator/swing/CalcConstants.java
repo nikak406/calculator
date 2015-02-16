@@ -1,8 +1,9 @@
 package calculator.swing;
 
-import java.awt.*;
+import java.awt.Font;
 
 public interface CalcConstants{
+
     final int FRAMEH = 360;
     final int FRAMEW = 740;
     final int BUTTONH = 40;

@@ -1,6 +1,6 @@
 package calculator.swing;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 class GUI {
     GUI () { new CalculatorFrame("Java Calculator"); }
