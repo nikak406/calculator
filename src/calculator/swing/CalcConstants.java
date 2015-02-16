@@ -1,3 +1,5 @@
+package calculator.swing;
+
 import java.awt.*;
 
 public interface CalcConstants{

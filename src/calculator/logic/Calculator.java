@@ -1,3 +1,5 @@
+package calculator.logic;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,12 +7,11 @@ import java.util.StringTokenizer;
 
 public class Calculator {
 
-    private String Equation;
-    private List<String> list   =   new ArrayList<>();
-    final String Delimiters   =   "+-/*^()";
+	private List<String> list   =   new ArrayList<>();
+    private static final String Delimiters   =   "+-/*^()";
     final Double PI  =   Math.PI;
     final Double e =   Math.exp(1);
-    final String token_list []= {"sinh",    "cosh",    "tanh",    "sin",    "cos",    "tan",    "asin",
+    final String tokenList[]= {"sinh",    "cosh",    "tanh",    "sin",    "cos",    "tan",    "asin",
             "acos",    "atan",    "abs",    "exp",    "sqrt",    "log",    "ln"};
     private void setResult(double res) { result = res; }
     public String getResult() {
@@ -21,13 +22,16 @@ public class Calculator {
     private double result;
     //-----------------------------------------------------------------
     private boolean containsLaps() //This method checks that number of "(" = number of ")" and order
-            throws ParameterSyntaxException{
+            throws ParameterSyntaxException {
         int laps = 0;
-        for (int i=0; i<list.size() ; i++){
-            if (list.get(i)=="(") laps++;
-            if (list.get(i)==")") laps--;
-            if (laps<0) throw new ParameterSyntaxException("Laps order error");
-        }
+		for (String aList : list) {
+			if (aList.equals("("))
+				laps++;
+			if (aList.equals(")"))
+				laps--;
+			if (laps < 0)
+				throw new ParameterSyntaxException("Laps order error");
+		}
         if (laps!=0) throw new ParameterSyntaxException("Laps quantity error");
         return list.contains("(");
     }
@@ -41,7 +45,7 @@ public class Calculator {
         }
         return -1;
     }
-    private void removeLaps()  //we recursively launching Calculator for every laps pair
+    private void removeLaps()  //we recursively launching calculator.logic.Calculator for every laps pair
             throws Exception{
         while (containsLaps()){
             List<String> Laps = list.subList(openLapIndex(), closeLapIndex()+1);
@@ -50,7 +54,6 @@ public class Calculator {
             list.remove(openLapIndex());
             list.remove(closeLapIndex());
         }
-        return;
     }
     //-----------------------------------------------------------------
     private void unarminus(){
@@ -192,7 +195,7 @@ public class Calculator {
     private void removeLonelyTokens() {
         for(int i=0; i<list.size(); i++) {
             String listel = list.get(i);
-            for (String token : token_list) {
+            for (String token : tokenList) {
                 if (listel.equals(token)) {
                     if (i != list.size() - 1) {
                         list.set(i, list.get(i) + list.get(i + 1));
@@ -221,15 +224,16 @@ public class Calculator {
     }
     private void createList(String str)
         throws ParameterSyntaxException{
-        Equation = str;
-        Equation = Equation.replaceAll(" ", "");
-        Equation = Equation.toLowerCase();
-        Equation = Equation.replaceAll("pi", (new Double(PI)).toString());
-        Equation = Equation.replaceAll("exp(1)", (new Double(e)).toString());
-        while (Equation.endsWith("=")) {Equation = Equation.substring(0, Equation.length()-1);}
-        if (Equation.startsWith("+")) Equation = Equation.substring(1);
-        if (Equation.isEmpty()) throw new ParameterSyntaxException("String is empty");
-        StringTokenizer st = new StringTokenizer(Equation, Delimiters, true);
+		String equation = str;
+        equation = equation.replaceAll(" ", "");
+        equation = equation.toLowerCase();
+        equation = equation.replaceAll("pi", (PI).toString());
+        equation = equation.replaceAll("exp(1)", (e).toString());
+        while (equation.endsWith("=")) {
+			equation = equation.substring(0, equation.length() - 1);}
+        if (equation.startsWith("+")) equation = equation.substring(1);
+        if (equation.isEmpty()) throw new ParameterSyntaxException("String is empty");
+        StringTokenizer st = new StringTokenizer(equation, Delimiters, true);
         while (st.hasMoreTokens()) list.add(st.nextToken());
     }
     //---------------------------------------------------------------------

@@ -1,3 +1,8 @@
+package calculator.swing;
+
+import calculator.logic.Calculator;
+import calculator.logic.ParameterSyntaxException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,11 +11,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 class CalculatorFrame extends JFrame implements CalcConstants {
-    CalcButton BUTTON[] = new CalcButton[BUTTON_NAMES.length];
+    CalcButton BUTTON[] = new CalcButton[CalcConstants.BUTTON_NAMES.length];
     JTextField textfield;
     FlowLayout flowlayout;
-    JPanel panel[] = new JPanel[NUMBEROFPANELS];
-    JLabel[] gaplabel = new JLabel[NUMBEROFLABELS];
+    JPanel panel[] = new JPanel[CalcConstants.NUMBEROFPANELS];
+    JLabel[] gaplabel = new JLabel[CalcConstants.NUMBEROFLABELS];
     private String memory = "";
     JLabel M, resultlabel;
     private boolean calcDone;
@@ -29,14 +34,14 @@ class CalculatorFrame extends JFrame implements CalcConstants {
     }
     CalculatorFrame(String str){
         super(str);
-        setSize(FRAMEW, FRAMEH);
+        setSize(CalcConstants.FRAMEW, CalcConstants.FRAMEH);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        flowlayout = new FlowLayout(FlowLayout.RIGHT, SPACEW, SPACEH);
-        setLayout(new GridLayout(NUMBEROFPANELS, 1));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        flowlayout = new FlowLayout(FlowLayout.RIGHT, CalcConstants.SPACEW, CalcConstants.SPACEH);
+        setLayout(new GridLayout(CalcConstants.NUMBEROFPANELS, 1));
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch(Exception e) {}
+        } catch(Exception ignored) {}
         createButtons();
         createTextArea();
         createLabels();
@@ -46,19 +51,19 @@ class CalculatorFrame extends JFrame implements CalcConstants {
     }
     void createButtons(){
         ButtonActionListener buttonactionlistener = new ButtonActionListener();
-        for (int j=0; j<BUTTON_NAMES.length; j++){
-            BUTTON[j] = new CalcButton(BUTTON_NAMES[j]);
+        for (int j=0; j< CalcConstants.BUTTON_NAMES.length; j++){
+            BUTTON[j] = new CalcButton(CalcConstants.BUTTON_NAMES[j]);
             BUTTON[j].addActionListener(buttonactionlistener);
         }
-        for (int j : WIDE_BUTTONS) {
-            BUTTON[j].setPreferredSize(new Dimension(WIDEBUTTONW, BUTTONH));
+        for (int j : CalcConstants.WIDE_BUTTONS) {
+            BUTTON[j].setPreferredSize(new Dimension(CalcConstants.WIDEBUTTONW, CalcConstants.BUTTONH));
         }
-        for (int j : BIGFONT_BUTTONS){
-            BUTTON[j].setFont(BIGFONT);
+        for (int j : CalcConstants.BIGFONT_BUTTONS){
+            BUTTON[j].setFont(CalcConstants.BIGFONT);
         }
     }
     void createTextArea(){
-        textfield = new JTextField(TEXTAREALENGTH);
+        textfield = new JTextField(CalcConstants.TEXTAREALENGTH);
         textfield.setEditable(true);
         TextFieldActionListener textfieldactionlistener = new TextFieldActionListener();
         textfield.addMouseListener(new MouseAdapter(){
@@ -68,24 +73,24 @@ class CalculatorFrame extends JFrame implements CalcConstants {
             }
         });
         textfield.addActionListener(textfieldactionlistener);
-        textfield.setFont(MIDFONT);
+        textfield.setFont(CalcConstants.MIDFONT);
         textfield.setText("");
     }
     void createLabels() {
-        for (int i = 0; i < NUMBEROFLABELS; i++) {
-            gaplabel[i] = new JLabel(gaplength, Label.LEFT);
+        for (int i = 0; i < CalcConstants.NUMBEROFLABELS; i++) {
+            gaplabel[i] = new JLabel(CalcConstants.gaplength, SwingConstants.LEFT);
         }
-        M = new JLabel("M", Label.LEFT);
-        M.setFont(BIGFONT);
-        M.setPreferredSize(new Dimension(BUTTONW, BUTTONH));
+        M = new JLabel("M", SwingConstants.LEFT);
+        M.setFont(CalcConstants.BIGFONT);
+        M.setPreferredSize(new Dimension(CalcConstants.BUTTONW, CalcConstants.BUTTONH));
         M.setVisible(false);
-        resultlabel = new JLabel("", Label.RIGHT);
-        resultlabel.setFont(MIDFONT);
-        resultlabel.setPreferredSize(new Dimension(3*BUTTONW + SPACEW, 40));
+        resultlabel = new JLabel("", SwingConstants.RIGHT);
+        resultlabel.setFont(CalcConstants.MIDFONT);
+        resultlabel.setPreferredSize(new Dimension(3* CalcConstants.BUTTONW + CalcConstants.SPACEW, 40));
         resultlabel.setVisible(true);
     }
     void createPanels(){
-        for (int i = 0; i<NUMBEROFPANELS; i++) {
+        for (int i = 0; i< CalcConstants.NUMBEROFPANELS; i++) {
             panel[i] = new JPanel(flowlayout);
             panel[i].setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
             panel[i].setAlignmentX(RIGHT_ALIGNMENT);
@@ -154,8 +159,8 @@ class CalculatorFrame extends JFrame implements CalcConstants {
     class CalcButton extends JButton{
         CalcButton(String str){
             super(str);
-            setPreferredSize(new Dimension(BUTTONW, BUTTONH));
-            setFont(REGFONT);
+            setPreferredSize(new Dimension(CalcConstants.BUTTONW, CalcConstants.BUTTONH));
+            setFont(CalcConstants.REGFONT);
         }
     }
     class ButtonActionListener implements ActionListener{
@@ -166,15 +171,15 @@ class CalculatorFrame extends JFrame implements CalcConstants {
                     else textfield.setText(resultlabel.getText());
             setCalcDone(false);
             boolean isnotspecial = true;
-            for(String s : SPECIAL_BUTTONS){
-                if(s==str){
+            for(String s : CalcConstants.SPECIAL_BUTTONS){
+                if(s.equals(str)){
                     isnotspecial = false;
-                    if (str=="C")  {setResultField(""); setTextField("");}
-                    if (str=="MC") dropMemory();
-                    if (str=="MR") appendTextField(getMemory());
-                    if (str=="M") setMemory(getResultLabel());
-                    if (str==BCSP) setTextField(backspace(getTextField()));
-                    if (str=="=") {setResultField(calculate(getTextField())); setCalcDone(true);}
+                    if (str.equals("C"))  {setResultField(""); setTextField("");}
+                    if (str.equals("MC")) dropMemory();
+                    if (str.equals("MR")) appendTextField(getMemory());
+                    if (str.equals("M")) setMemory(getResultLabel());
+                    if (str.equals(CalcConstants.BCSP)) setTextField(backspace(getTextField()));
+                    if (str.equals("=")) {setResultField(calculate(getTextField())); setCalcDone(true);}
                 }
             }
             if(isnotspecial) appendTextField(str);
@@ -186,16 +191,16 @@ class CalculatorFrame extends JFrame implements CalcConstants {
         }
     }
     String backspace(String s){
-        if (s!="") return s.substring(0, s.length()-1);
+        if (!s.equals("")) return s.substring(0, s.length()-1);
         else return s;
     }
     String calculate(String s){
-        s=s.replaceAll(sqrt, "sqrt");
-        s=s.replaceAll(PI, "PI");
-        s=s.replaceAll(deg, "d");
-        s=s.replaceAll(x2, "^(2)");
-        s=s.replaceAll(mult, "*");
-        s=s.replaceAll(e, "exp(1)");
+        s=s.replaceAll(CalcConstants.sqrt, "sqrt");
+        s=s.replaceAll(CalcConstants.PI, "PI");
+        s=s.replaceAll(CalcConstants.deg, "d");
+        s=s.replaceAll(CalcConstants.x2, "^(2)");
+        s=s.replaceAll(CalcConstants.mult, "*");
+        s=s.replaceAll(CalcConstants.e, "exp(1)");
         try{
             Calculator calc = new Calculator(s);
             return calc.getResult();
