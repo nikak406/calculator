@@ -51,14 +51,14 @@ public class Calculator {
 
 	private int openLapIndex(){ return mList.indexOf("(");}
 
-	private int closeLapIndex() {
+	private int closeLapIndex() throws ParameterSyntaxException{
 		int count = 1;
 		for (int i = openLapIndex()+1; i< mList.size(); i++){
 			if (mList.get(i).equals("(")) count++;
 			if (mList.get(i).equals(")")) count--;
 			if (count==0) return i;
 		}
-		return -1;
+		throw new ParameterSyntaxException("Laps error");
 	}
 
 	private void removeLaps() throws ParameterSyntaxException{
@@ -66,8 +66,8 @@ public class Calculator {
 			List<String> Laps = mList.subList(openLapIndex(), closeLapIndex()+1);
 			List<String> InsideLaps = Laps.subList(1, Laps.size()-1);
 			new Calculator(InsideLaps);
-			mList.remove(openLapIndex());
 			mList.remove(closeLapIndex());
+			mList.remove(openLapIndex());
 		}
 	}
 
