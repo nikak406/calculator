@@ -198,13 +198,12 @@ class CalculatorFrame extends JFrame implements CalcConstants, SwingConstants{
 		s=s.replaceAll(MULTIPLICATION, "*");
 		s=s.replaceAll(EXP, "exp(1)");
 		try{
-			Calculator calc = new Calculator(s);
-			return calc.getResult();
+			return Calculator.calculate(s);
 		}
 		catch(ParameterSyntaxException e){ return "Operator sequence error"; }
 		catch(ArithmeticException e){ return "Math error"; }
 		catch(NumberFormatException e){ return "Math error"; }
-		catch(Exception e){ return "Error"; }
+		catch(Exception e){ return "Unknown Error"; }
 	}
 
 	class CalcButton extends JButton{

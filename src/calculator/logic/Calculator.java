@@ -1,43 +1,71 @@
 package calculator.logic;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static java.lang.Math.PI;
 
 public class Calculator {
 
 	private static final String DELIMITERS =   "+-/*^()";
-	private static final Double PI = Math.PI;
 	private static final Double EXP = Math.exp(1);
 
 	private static final String TOKENS_ARRAY[]= {"sinh",    "cosh",    "tanh",    "sin",    "cos",    "tan",    "asin",
 			"acos",    "atan",    "abs",    "exp",    "sqrt",    "log",    "ln"};
 
-	private List<String> mList;
-	private double result;
+	private List<String> list;
+	private String result;
 
-	public Calculator(List<String> list) throws ParameterSyntaxException{
-		mList = list;
-		calculate();
+	public static String calculate(String equation) throws ParameterSyntaxException, ArithmeticException, NumberFormatException{
+		Calculator calculator = new Calculator(createList(equation));
+		return calculator.result;
 	}
 
-	public Calculator(String str) throws ParameterSyntaxException, ArithmeticException, NumberFormatException {
-		createList(str);
-		calculate();
+	private static List<String> createList(String equation) throws ParameterSyntaxException{
+		equation = equation.replaceAll(" ", "");
+		equation = equation.toLowerCase();
+		equation = equation.replaceAll("pi", Double.toString(PI));
+		equation = equation.replaceAll("exp(1)", (EXP).toString());
+		if (equation.isEmpty()) throw new ParameterSyntaxException("String is empty");
+		while (equation.endsWith("=")) {
+			equation = equation.substring(0, equation.length() - 1);
+		}
+		if (equation.startsWith("+")) equation = equation.substring(1);
+		StringTokenizer stringTokenizer = new StringTokenizer(equation, DELIMITERS, true);
+		List<String> list = new LinkedList<>();
+		while (stringTokenizer.hasMoreTokens()) list.add(stringTokenizer.nextToken());
+		return list;
 	}
 
-	private void setResult(double res) { result = res; }
+	private Calculator(List<String> list) throws ParameterSyntaxException, ArithmeticException, NumberFormatException{
+		this.list = list;
+		System.out.println("new Calculator: " + list);
+		compute();
+	}
 
-	public String getResult() {
-		String s = (new Double(roundResult(result))).toString();
+	private String formatResult(String s){
+		String zeros = "00000000";
+		String nines = "99999999";
+		if (s.contains("."+zeros)||s.contains("."+nines))
+			s = s.substring(0, s.indexOf("."));
+		if (s.contains(zeros)&&(s.indexOf(zeros)>s.indexOf("."))){
+			s = s.substring(0, s.indexOf(zeros));
+		}
+		if (s.contains(nines)&&(s.indexOf(nines)>s.indexOf("."))){
+			s = s.substring(0, s.indexOf(nines));
+			char c = s.charAt(s.length()-1);
+			s = s.substring(0, s.length()-1)+(char)((int)c+1);
+		}
 		if (s.endsWith(".0")) s=s.substring(0, s.length()-2);
-		return  s;
+		if (s.equals("NaN")) s = "Not a number";
+		return s;
 	}
 
 	private boolean containsLaps() throws ParameterSyntaxException {
 		int laps = 0;
-		for (String aList : mList) {
+		for (String aList : list) {
 			if (aList.equals("("))
 				laps++;
 			if (aList.equals(")"))
@@ -46,16 +74,16 @@ public class Calculator {
 				throw new ParameterSyntaxException("Laps order error");
 		}
 		if (laps!=0) throw new ParameterSyntaxException("Laps quantity error");
-		return mList.contains("(");
+		return list.contains("(");
 	}
 
-	private int openLapIndex(){ return mList.indexOf("(");}
+	private int openLapIndex(){ return list.indexOf("(");}
 
 	private int closeLapIndex() throws ParameterSyntaxException{
 		int count = 1;
-		for (int i = openLapIndex()+1; i< mList.size(); i++){
-			if (mList.get(i).equals("(")) count++;
-			if (mList.get(i).equals(")")) count--;
+		for (int i = openLapIndex()+1; i< list.size(); i++){
+			if (list.get(i).equals("(")) count++;
+			if (list.get(i).equals(")")) count--;
 			if (count==0) return i;
 		}
 		throw new ParameterSyntaxException("Laps error");
@@ -63,44 +91,30 @@ public class Calculator {
 
 	private void removeLaps() throws ParameterSyntaxException{
 		while (containsLaps()){
-			List<String> Laps = mList.subList(openLapIndex(), closeLapIndex()+1);
-			List<String> InsideLaps = Laps.subList(1, Laps.size()-1);
+			System.out.println("Remove Laps: " + openLapIndex() + " " + closeLapIndex());
+			List<String> InsideLaps = list.subList(openLapIndex()+1, closeLapIndex());
 			new Calculator(InsideLaps);
-			mList.remove(closeLapIndex());
-			mList.remove(openLapIndex());
+			list.remove(closeLapIndex());
+			list.remove(openLapIndex());
 		}
 	}
 
-	private void unarMinus(){
-		for(int i = 0; i< mList.size(); i++){
-			String str2 = mList.get(i);
-			if (str2.equals("-")&&(i==0)) {
-				mList.set(1, "-"+ mList.get(1));
-				mList.remove(0);
-				continue;
-			}
-			if (i>0) if (str2.equals("-") && DELIMITERS.contains(mList.get(i-1))){
-				mList.set(i+1, "-"+ mList.get(i+1));
-				mList.remove(i);
-				continue;
-			}
-			if (i>0) {
-				Character c = (mList.get(i-1).charAt(mList.get(i-1).length()-1));
-				if ( str2.equals("-") && !c.equals('d') &&
-						(!mList.get(i-1).endsWith("pi")) && !Character.isDigit(c)){
-					mList.set(i-1, mList.get(i-1)+ mList.get(i)+ mList.get(i+1));
-					mList.remove(i+1);
-					mList.remove(i);
-					i--;
-				}
+	private void minus(){
+		for (int i=0; i< list.size(); i++){
+			if (list.get(i).equals("-")){
+				list.set(i, "+");
+				list.add(i+1, "-1");
+				list.add(i+2, "*");
+				if (i>0 && DELIMITERS.contains(list.get(i-1))) list.remove(i);
 			}
 		}
+		if (list.get(0).equals("+")) list.remove(0);
 	}
 
 	private void calculateDegrees() throws NumberFormatException{
 
-		for(int i=0; i< mList.size(); i++){
-			String s = mList.get(i);
+		for(int i=0; i< list.size(); i++){
+			String s = list.get(i);
 			Double d;
 			if (!DELIMITERS.contains(s) && s.endsWith("d")){
 				int k=0;
@@ -110,168 +124,135 @@ public class Calculator {
 				}
 				d = Double.parseDouble(s.substring(k, s.length()-1));
 				d = Math.toRadians(d);
-				mList.set(i, s.substring(0, k)+d.toString());
+				list.set(i, s.substring(0, k)+d.toString());
 			}
 		}
 	}
 
 	private void calculateTokens() throws NumberFormatException, ArithmeticException, ParameterSyntaxException{
 		removeLonelyTokens();
-		for(int i=0; i< mList.size(); i++){
-			String s = mList.get(i);
+		for(int i=0; i< list.size(); i++){
+			String currentElement = list.get(i);
 			Double d;
-			int sign = 1;
-			if (s.startsWith("-")){
-				sign = -1;
-				s = s.substring(1);
-			}
-			if (!DELIMITERS.contains(s)){
-				if (s.startsWith("ln")) {
-					d = Double.parseDouble(s.substring(2));
-					d = sign*Math.log(d);
-					mList.set(i, d.toString());
+			if (!DELIMITERS.contains(currentElement)){
+				if (currentElement.startsWith("ln")) {
+					d = Double.parseDouble(currentElement.substring(2));
+					d = Math.log(d);
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("log")) {
-					d = Double.parseDouble(s.substring(3));
-					d = sign*Math.log10(d);
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("log")) {
+					d = Double.parseDouble(currentElement.substring(3));
+					d = Math.log10(d);
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("abs")) {
-					d = sign*Math.abs(Double.parseDouble(s.substring(3)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("abs")) {
+					d = Math.abs(Double.parseDouble(currentElement.substring(3)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("sin")) {
-					d = sign*Math.sin(Double.parseDouble(s.substring(3)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("sin")) {
+					d = Math.sin(Double.parseDouble(currentElement.substring(3)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("cos")) {
-					d = sign*Math.cos(Double.parseDouble(s.substring(3)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("cos")) {
+					d = Math.cos(Double.parseDouble(currentElement.substring(3)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("tan")) {
-					d = sign*Math.tan(Double.parseDouble(s.substring(3)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("tan")) {
+					d = Math.tan(Double.parseDouble(currentElement.substring(3)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("sqrt")) {
-					d = Double.parseDouble(s.substring(4));
-					d = sign*Math.sqrt(d);
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("sqrt")) {
+					d = Double.parseDouble(currentElement.substring(4));
+					d = Math.sqrt(d);
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("sinh")) {
-					d = sign*Math.sinh(Double.parseDouble(s.substring(4)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("sinh")) {
+					d = Math.sinh(Double.parseDouble(currentElement.substring(4)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("tanh")) {
-					d = sign*Math.tanh(Double.parseDouble(s.substring(4)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("tanh")) {
+					d = Math.tanh(Double.parseDouble(currentElement.substring(4)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("acos")) {
-					d = sign*Math.acos(Double.parseDouble(s.substring(4)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("acos")) {
+					d = Math.acos(Double.parseDouble(currentElement.substring(4)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("asin")) {
-					d = sign*Math.asin(Double.parseDouble(s.substring(4)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("asin")) {
+					d = Math.asin(Double.parseDouble(currentElement.substring(4)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("exp")) {
-					d = sign*Math.exp(Double.parseDouble(s.substring(3)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("exp")) {
+					d = Math.exp(Double.parseDouble(currentElement.substring(3)));
+					list.set(i, d.toString());
 				}
-				if (s.startsWith("atan")) {
-					d = sign*Math.atan(Double.parseDouble(s.substring(4)));
-					mList.set(i, d.toString());
+				if (currentElement.startsWith("atan")) {
+					d = Math.atan(Double.parseDouble(currentElement.substring(4)));
+					list.set(i, d.toString());
 				}
 			}
 		}
 	}
 
-	private void operator(String s) throws ParameterSyntaxException{
-		for(int i = 0; i< mList.size(); i++){
-			String str2 = mList.get(i);
+	private void operator(String operator) throws ParameterSyntaxException{
+		for(int i = 0; i< list.size(); i++){
+			String currentElement = list.get(i);
 			double a, b, c;
-			if (str2.equals(s)) {
-				a = Double.parseDouble(mList.get(i - 1));
-				b = Double.parseDouble(mList.get(i + 1));
-				switch (s){
-				case "^": c = Math.pow(a, b); break;
-				case "*": c = a*b; break;
-				case "/": c = a/b; break;
-				case "+": c = a+b; break;
-				case "-": c = a-b; break;
-				default: throw new ParameterSyntaxException("Operator sequence error");
+			if (currentElement.equals(operator)) {
+				a = Double.parseDouble(list.get(i - 1));
+				b = Double.parseDouble(list.get(i + 1));
+				switch (operator){
+				case "^":
+					c = Math.pow(a, b);
+					break;
+				case "*":
+					c = a*b;
+					break;
+				case "/":
+					c = a/b;
+					break;
+				case "+":
+					c = a+b;
+					break;
+				default:
+					throw new ParameterSyntaxException("Operator sequence error");
 				}
-				mList.set(i, (new Double(c)).toString());
-				mList.remove(i+1);
-				mList.remove(i-1);
+				list.set(i, Double.toString(c));
+				list.remove(i+1);
+				list.remove(i-1);
 				i--;
 			}
 		}
 	}
 
 	private void removeLonelyTokens() throws ParameterSyntaxException{
-		for(int i=0; i< mList.size(); i++) {
-			String listElement = mList.get(i);
-			for (String token : TOKENS_ARRAY) {
-				if (listElement.equals(token)) {
-					if (i != mList.size() - 1) {
-						mList.set(i, mList.get(i) + mList.get(i + 1));
-						mList.remove(i + 1);
-					} else throw new ParameterSyntaxException("Syntax error");
-				}
+		for(int i=0; i< list.size(); i++) {
+			String listElement = list.get(i);
+			if (Arrays.asList(TOKENS_ARRAY).contains(listElement)) {
+				if (i != list.size() - 1) {
+					list.set(i, list.get(i) + list.get(i + 1));
+					list.remove(i + 1);
+				} else throw new ParameterSyntaxException("Syntax error");
 			}
 		}
 	}
 
-	private double roundResult(double x){
-		String zeros = "00000000";
-		String nines = "99999999";
-		String s = BigDecimal.valueOf(x).toPlainString();
-		if (s.contains("."+zeros)||s.contains("."+nines)) return Math.round(x);
-		if (s.contains(zeros)&&(s.indexOf(zeros)>s.indexOf("."))){
-			s = s.substring(0, s.indexOf(zeros));
-			return Double.parseDouble(s);
-		}
-		if (s.contains(nines)&&(s.indexOf(nines)>s.indexOf("."))){
-			s = s.substring(0, s.indexOf(nines));
-			char c = s.charAt(s.length()-1);
-			s = s.substring(0, s.length()-1)+(char)((int)c+1);
-			return Double.parseDouble(s);
-		}
-		return x;
-	}
-
-	private void createList(String equation) throws ParameterSyntaxException{
-		equation = equation.replaceAll(" ", "");
-		equation = equation.toLowerCase();
-		equation = equation.replaceAll("pi", (PI).toString());
-		equation = equation.replaceAll("exp(1)", (EXP).toString());
-		if (equation.isEmpty()) throw new ParameterSyntaxException("String is empty");
-		while (equation.endsWith("=")) {
-			equation = equation.substring(0, equation.length() - 1);
-		}
-		if (equation.startsWith("+")) equation = equation.substring(1);
-		StringTokenizer stringTokenizer = new StringTokenizer(equation, DELIMITERS, true);
-		mList = new ArrayList<>(50);
-		while (stringTokenizer.hasMoreTokens()) mList.add(stringTokenizer.nextToken());
-	}
-
-	private void calculate() throws ArithmeticException, NumberFormatException, ParameterSyntaxException{
+	private void compute() throws ArithmeticException, NumberFormatException, ParameterSyntaxException{
 		try{
+			minus();
 			removeLaps();
-			unarMinus();
 			calculateDegrees();
 			calculateTokens();
 			operator("^");
 			operator("*");
 			operator("/");
 			operator("+");
-			operator("-");
 		}catch(IndexOutOfBoundsException e){
-			throw new ParameterSyntaxException("Operator sequence error");
+			throw new ParameterSyntaxException("Operator sequence error" + e);
 		}
-		if (mList.size()==1){
-			double x = Double.parseDouble(mList.get(0));
-			setResult(x);
+		if (list.size()==1){
+			result = formatResult(list.get(0));
+			System.out.println("Result: "+result);
 		}else throw new ParameterSyntaxException("Operator sequence error");
 	}
 }
