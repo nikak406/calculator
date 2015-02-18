@@ -27,9 +27,9 @@ public class Calculator {
 		} catch (ParameterSyntaxException e) {
 			result = "Syntax error: " + e.getMessage();
 		} catch (ArithmeticException e) {
-			result = "Arithmetic error:" + e.getMessage();
+			result = "Arithmetic error: " + e.getMessage();
 		} catch (NumberFormatException e) {
-			result = "Number format error:" + e.getMessage();
+			result = "Number format error: " + e.getMessage();
 		}catch (Exception e) {
 			result = "Unknown error: " + e.getMessage();
 		}
@@ -41,7 +41,7 @@ public class Calculator {
 		equation = equation.toLowerCase();
 		equation = equation.replaceAll("pi", Double.toString(PI));
 		equation = equation.replaceAll("exp(1)", (EXP).toString());
-		if (equation.isEmpty()) throw new ParameterSyntaxException("String is empty");
+		if (equation.isEmpty()) throw new ParameterSyntaxException("Input is empty");
 		while (equation.endsWith("=")) {
 			equation = equation.substring(0, equation.length() - 1);
 		}
