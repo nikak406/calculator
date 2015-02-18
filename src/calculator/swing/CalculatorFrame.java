@@ -200,7 +200,6 @@ class CalculatorFrame extends JFrame implements CalcConstants, SwingConstants{
 		try{
 			return Calculator.calculate(s);
 		}
-		catch(ParameterSyntaxException e){ return "Operator sequence error"; }
 		catch(ArithmeticException e){ return "Math error"; }
 		catch(NumberFormatException e){ return "Math error"; }
 		catch(Exception e){ return "Unknown Error"; }

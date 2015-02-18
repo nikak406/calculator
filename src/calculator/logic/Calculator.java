@@ -18,9 +18,22 @@ public class Calculator {
 	private List<String> list;
 	private String result;
 
-	public static String calculate(String equation) throws ParameterSyntaxException, ArithmeticException, NumberFormatException{
-		Calculator calculator = new Calculator(createList(equation));
-		return calculator.result;
+	public static String calculate(String equation){
+		Calculator calculator = null;
+		String result = null;
+		try {
+			calculator = new Calculator(createList(equation));
+			result = calculator.result;
+		} catch (ParameterSyntaxException e) {
+			result = "Syntax error: " + e.getMessage();
+		} catch (ArithmeticException e) {
+			result = "Arithmetic error:" + e.getMessage();
+		} catch (NumberFormatException e) {
+			result = "Number format error:" + e.getMessage();
+		}catch (Exception e) {
+			result = "Unknown error: " + e.getMessage();
+		}
+		return result;
 	}
 
 	private static List<String> createList(String equation) throws ParameterSyntaxException{
@@ -41,7 +54,6 @@ public class Calculator {
 
 	private Calculator(List<String> list) throws ParameterSyntaxException, ArithmeticException, NumberFormatException{
 		this.list = list;
-		System.out.println("new Calculator: " + list);
 		compute();
 	}
 
@@ -91,7 +103,6 @@ public class Calculator {
 
 	private void removeLaps() throws ParameterSyntaxException{
 		while (containsLaps()){
-			System.out.println("Remove Laps: " + openLapIndex() + " " + closeLapIndex());
 			List<String> InsideLaps = list.subList(openLapIndex()+1, closeLapIndex());
 			new Calculator(InsideLaps);
 			list.remove(closeLapIndex());
@@ -232,7 +243,7 @@ public class Calculator {
 				if (i != list.size() - 1) {
 					list.set(i, list.get(i) + list.get(i + 1));
 					list.remove(i + 1);
-				} else throw new ParameterSyntaxException("Syntax error");
+				} else throw new ParameterSyntaxException("Function format error");
 			}
 		}
 	}
@@ -248,11 +259,12 @@ public class Calculator {
 			operator("/");
 			operator("+");
 		}catch(IndexOutOfBoundsException e){
-			throw new ParameterSyntaxException("Operator sequence error" + e);
+			throw new ParameterSyntaxException("Operator sequence error");
 		}
 		if (list.size()==1){
-			result = formatResult(list.get(0));
-			System.out.println("Result: "+result);
+			String result = list.get(0);
+			Double.parseDouble(result); //to check the result is a number
+			this.result = formatResult(result);
 		}else throw new ParameterSyntaxException("Operator sequence error");
 	}
 }
