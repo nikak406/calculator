@@ -95,11 +95,11 @@ class CalculatorFrame extends JFrame implements CalcConstants, SwingConstants{
 		}
 		M = new JLabel("M", LEFT);
 		M.setFont(BIGFONT);
-		M.setPreferredSize(new Dimension(BUTTONW, BUTTONH));
+		M.setPreferredSize(new Dimension(BUTTONW-20, BUTTONH));
 		M.setVisible(false);
 		resultLabel = new JLabel("", RIGHT);
 		resultLabel.setFont(MIDFONT);
-		resultLabel.setPreferredSize(new Dimension(3 * BUTTONW + SPACEW, 40));
+		resultLabel.setPreferredSize(new Dimension(3 * BUTTONW+SPACEW, 40));
 		resultLabel.setVisible(true);
 	}
 
@@ -205,6 +205,7 @@ class CalculatorFrame extends JFrame implements CalcConstants, SwingConstants{
 			switch (actionCommandName) {
 			case (EQUALS):
 				resultLabel.setText(calculate(textField.getText()));
+				//resultLabel.setText("= pressed");
 				calcDone = true;
 				break;
 			case (CANCEL):

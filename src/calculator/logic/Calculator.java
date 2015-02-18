@@ -1,9 +1,6 @@
 package calculator.logic;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import static java.lang.Math.PI;
 
@@ -57,7 +54,11 @@ public class Calculator {
 		compute();
 	}
 
-	private String formatResult(String s){
+	private String formatResult(String s) throws NumberFormatException{
+		double d = Double.parseDouble(s);
+		Formatter fmt = new Formatter();
+		fmt.format("%.7g", d);
+		if (s.length()>12) s = fmt.toString();
 		String zeros = "00000000";
 		String nines = "99999999";
 		if (s.contains("."+zeros)||s.contains("."+nines))
@@ -263,7 +264,6 @@ public class Calculator {
 		}
 		if (list.size()==1){
 			String result = list.get(0);
-			double ignored = Double.parseDouble(result); //to check the result is a number
 			this.result = formatResult(result);
 		}else throw new ParameterSyntaxException("Operator sequence error");
 	}

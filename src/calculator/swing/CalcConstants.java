@@ -13,7 +13,7 @@ public interface CalcConstants{
 	final int SPACEH = 10;
 	final int NUMBER_OF_PANELS = 6;
 	final int NUMBER_OF_LABELS = 7;
-	final int TEXT_AREA_LENGTH = 22;
+	final int TEXT_AREA_LENGTH = 19;
 	final String GAP_LENGTH = "                ";
 	final String DEGREE = Character.toString((char) 186);
 	final String PI = "\u03C0";
