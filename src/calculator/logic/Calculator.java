@@ -19,8 +19,8 @@ public class Calculator {
 	private String result;
 
 	public static String calculate(String equation){
-		Calculator calculator = null;
-		String result = null;
+		Calculator calculator;
+		String result;
 		try {
 			calculator = new Calculator(createList(equation));
 			result = calculator.result;
@@ -30,7 +30,7 @@ public class Calculator {
 			result = "Arithmetic error: " + e.getMessage();
 		} catch (NumberFormatException e) {
 			result = "Number format error: " + e.getMessage();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			result = "Unknown error: " + e.getMessage();
 		}
 		return result;
@@ -263,9 +263,13 @@ public class Calculator {
 		}
 		if (list.size()==1){
 			String result = list.get(0);
-			Double.parseDouble(result); //to check the result is a number
+			double ignored = Double.parseDouble(result); //to check the result is a number
 			this.result = formatResult(result);
 		}else throw new ParameterSyntaxException("Operator sequence error");
+	}
+
+	public static class ParameterSyntaxException extends Exception{
+		public ParameterSyntaxException(String str) {super(str);}
 	}
 }
 
