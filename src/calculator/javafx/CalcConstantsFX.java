@@ -1,9 +1,18 @@
-package calculator.swing;
+package calculator.javafx;
 
-import java.awt.Font;
+public interface CalcConstantsFX {
 
-public interface CalcConstants{
+    //double GOLDEN_RATIO = 1.618;
+    int BUTTON_INDENT = 10;
+    int BUTTON_SIZE_X = 50;
+    int BUTTON_SIZE_Y = 50;
+    int DOUBLE_BUTTON_SIZE_X = BUTTON_SIZE_X + BUTTON_SIZE_X + BUTTON_INDENT;
+    int DOUBLE_BUTTON_SIZE_Y = BUTTON_SIZE_Y + BUTTON_SIZE_Y + BUTTON_INDENT;
+    int CALCULATION_AREA_LENGTH = 80;
+    int CALCULATION_AREA_HEIGHT = 20;
+}
 
+/*  swing
     final int FRAMEH = 360;
     final int FRAMEW = 750;
     final int BUTTONH = 40;
@@ -40,4 +49,4 @@ public interface CalcConstants{
     final Font BIGFONT = new Font("Sans", Font.BOLD, 25);
     final Font REGFONT = new Font("Sans", Font.BOLD, 14);
     final Font MIDFONT = new Font("Sans", Font.BOLD, 21);
-}
+*/

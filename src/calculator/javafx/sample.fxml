@@ -1,0 +1,51 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import calculator.javafx.element.Button?>
+<?import javafx.scene.control.Label?>
+<?import calculator.javafx.element.CalculationField?>
+<?import javafx.scene.layout.HBox?>
+<GridPane fx:controller="calculator.javafx.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <Label fx:id="resultLabel" GridPane.columnIndex="0" GridPane.rowIndex="0"
+           GridPane.halignment="RIGHT" />
+    <CalculationField fx:id="calculationField" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                      GridPane.halignment="RIGHT"/>
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.halignment="RIGHT">
+        <Label fx:id="memoryLabel" text=""/>
+        <Button fx:id="memoryRead" text="MR"/>
+        <Button fx:id="cancel" text="C"/>
+        <Button fx:id="backspace" text="bcsp"/>
+    </HBox>
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="RIGHT">
+        <Button fx:id="seven" text="7"/>
+        <Button fx:id="eight" text="8"/>
+        <Button fx:id="nine" text="9"/>
+        <Button fx:id="divide" text="/"/>
+        <Button fx:id="openLap" text="("/>
+    </HBox>
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="RIGHT">
+        <Button fx:id="four" text="4"/>
+        <Button fx:id="five" text="5"/>
+        <Button fx:id="six" text="6"/>
+        <Button fx:id="multiply" text="*"/>
+        <Button fx:id="closeLap" text=")"/>
+    </HBox>
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.halignment="RIGHT">
+        <Button fx:id="one" text="1"/>
+        <Button fx:id="two" text="2"/>
+        <Button fx:id="three" text="3"/>
+        <Button fx:id="plus" text="+"/>
+        <Button fx:id="memory" text="M"/>
+    </HBox>
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="RIGHT">
+        <Button fx:id="zero" text="0"/>
+        <Button fx:id="dot" text="."/>
+        <Button fx:id="power" text="^"/>
+        <Button fx:id="minus" text="-"/>
+        <Button fx:id="equals" text="="/>
+    </HBox>
+</GridPane>
