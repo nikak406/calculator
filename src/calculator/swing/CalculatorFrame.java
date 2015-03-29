@@ -203,30 +203,30 @@ class CalculatorFrame extends JFrame implements CalcConstants, SwingConstants{
 				else textField.setText(resultLabel.getText());
 			calcDone = false;
 			switch (actionCommandName) {
-			case (EQUALS):
-				resultLabel.setText(calculate(textField.getText()));
-				//resultLabel.setText("= pressed");
-				calcDone = true;
-				break;
-			case (CANCEL):
-				resultLabel.setText("");
-				textField.setText("");
-				break;
-			case (BCSP):
-				textField.setText(backspace(textField.getText()));
-				break;
-			case (ADD_MEMORY):
-				setMemory(resultLabel.getText());
-				break;
-			case (DROP_MEMORY):
-				setMemory("");
-				break;
-			case (SHOW_MEMORY):
-				appendTextField(getMemory());
-				break;
-			default:
-				appendTextField(actionCommandName);
-				break;
+				case (EQUALS):
+					resultLabel.setText(calculate(textField.getText()));
+					//resultLabel.setText("= pressed");
+					calcDone = true;
+					break;
+				case (CANCEL):
+					resultLabel.setText("");
+					textField.setText("");
+					break;
+				case (BCSP):
+					textField.setText(backspace(textField.getText()));
+					break;
+				case (ADD_MEMORY):
+					setMemory(resultLabel.getText());
+					break;
+				case (DROP_MEMORY):
+					setMemory("");
+					break;
+				case (SHOW_MEMORY):
+					appendTextField(getMemory());
+					break;
+				default:
+					appendTextField(actionCommandName);
+					break;
 			}
 		}
 	}
