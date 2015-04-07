@@ -1,0 +1,75 @@
+body {
+    alignment: center;
+    background-color: black;
+    color: gray;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 120px;
+    width: 540px;
+    text-align: right;
+    font-size: x-large;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+
+li {
+    float: left;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+input[type=submit] {
+    display: block;
+    font-weight: bold;
+    color: lightgray;
+    background-color: black;
+    width: 90px;
+    text-align: center;
+    border: none;
+    height: 60px;
+    vertical-align: middle;
+    font-size: x-large;
+}
+input[type=submit]:focus {
+    color: white;
+    background-color: black;
+    font-size: xx-large;
+}
+input[type=submit]:hover {
+    color: white;
+    background-color: black;
+    font-size: xx-large;
+}
+
+a:link, a:visited {
+    display: block;
+    font-weight: bold;
+    color: lightgray;
+    background-color: black;
+    width: 90px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    height: 60px;
+}
+
+a:hover, a:active {
+    background-color: black;
+    color: white;
+    font-size: xx-large;
+}
+
+input[type=text]{
+    width: 540px;
+    background-color: black;
+    font-size: x-large;
+    color: white;
+    height: 60px;
+    text-align: right;
+    vertical-align: middle;
+    border-color: lightgray;
+}
