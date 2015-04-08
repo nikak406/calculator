@@ -7,7 +7,7 @@
 <body>
 <%=(request.getAttribute("equation")==null)?"<br>":request.getAttribute("equation").toString()%>
 <br>
-<form method="post" name = "calc" action = "/">
+<form method="post" name = "calc" action = "/calc">
     <input  type="text" id="calcinput" maxlength="100" name="equation"
             value="<%=(request.getAttribute("result")==null)?"":request.getAttribute("result").toString()%>">
     <br><br>

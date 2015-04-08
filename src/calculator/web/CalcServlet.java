@@ -4,7 +4,7 @@ import java.io.IOException;
 import calculator.logic.Calculator;
 import javax.servlet.http.HttpServlet;
 
-@javax.servlet.annotation.WebServlet(name = "CalcServlet", urlPatterns = "/")
+@javax.servlet.annotation.WebServlet(name = "CalcServlet", urlPatterns = "/calc")
 public class CalcServlet extends HttpServlet {
 
 	protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
